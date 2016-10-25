@@ -9,10 +9,10 @@ Desktop.ini
 $RECYCLE.BIN/
 
 # Subdirectories
-bin/
-obj/
-.vs/
-Debug/
+bin/**
+obj/**
+.vs/**
+Debug/**
 
 # Windows Installer files
 *.cab
