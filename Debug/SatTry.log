@@ -1,0 +1,3 @@
+﻿  cdcl.cpp
+cdcl.cpp(117): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+  SatTry.vcxproj -> C:\Users\admin\Source\Repos\Sat-v2\Debug\SatSolver.exe

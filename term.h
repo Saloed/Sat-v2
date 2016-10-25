@@ -11,31 +11,29 @@ typedef set<int> Clause;
 typedef vector<Clause> Clauses;
 typedef set<Variable> Variables;
 
-class Assigment;  //forward declaration
+class Assigment; //forward declaration
 
 class Term
 {
 public:
-    Term();
+	Term();
 
 
-    void add(Clause c);
+	void add(Clause c);
 
-        Variables& getVariables();
+	Variables& getVariables();
 
-        Clauses& getClauses();
+	Clauses& getClauses();
 
-        Clause getClause(Assigment a, int i);
-        Clauses getClauses(Assigment a);
+	Clause getClause(Assigment a, int i);
+	Clauses getClauses(Assigment a);
 
-     friend int abs(int a);
+	friend inline int abs(int a);
 
 private:
-    vector<Clause> clauses;
-    set<Variable> variables;
+	vector<Clause> clauses;
+	set<Variable> variables;
 
-    map<Variable, int> decisions; // variable, decision level
-
+	map<Variable, int> decisions; // variable, decision level
 };
-
 

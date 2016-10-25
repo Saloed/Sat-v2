@@ -1,57 +1,36 @@
 #include "cdcl.h"
 
-CDCL::CDCL(Term formula) :Sat_Solver_Base(formula){
+CDCL::CDCL(Term formula) : Sat_Solver_Base(formula)
+{
 	solved = false;
 }
 
-Clause CDCL::resolve(Clause c1, Clause c2, Variable v) {
-
+Clause CDCL::resolve(Clause c1, Clause c2, Variable v)
+{
 	Clause c;
-	bool pos = false;
-	bool found = false;
-	for (auto it = c1.begin(); it != c1.end(); it++)
-	{
-		if (*it == v)
-		{
-			pos = true;
-			found = true;
-		}
-		else if (*it == -v)
-		{
-			pos = false;
-			found = true;
-		}
-		else c.insert(*it);
-	}
 
-	found = false;
-	for (auto it = c2.begin(); it != c2.end(); it++)
-	{
-		if (*it == v)
-		{
-			found = true;
-		}
-		else if (*it == -v)
-		{
-			found = true;
-		}
-		else c.insert(*it);
-	}
+	for (auto it : c1)
+		if (it != v && it != -v)
+			c.insert(it);
+
+	for (auto it : c2)
+		if (it != v && it != -v)
+			c.insert(it);
+
 	return c;
 }
 
-unit CDCL::unitPropagation() {
-
-	
+unit CDCL::unitPropagation()
+{
 	for (unsigned int i = 0; i < statement.getClauses().size(); i++)
 	{
-		Clause c = statement.getClause(conclusion, i);
+		auto c = statement.getClause(conclusion, i);
 		if (c.count(0) > 0) continue;
 
 		if (c.size() == 1)
 		{
-			int clause = *c.begin();
-			Variable var = abs(clause);
+			auto clause = *c.begin();
+			auto var = abs(clause);
 			if (clause > 0)
 			{
 				conclusion.set(var, true);
@@ -68,16 +47,15 @@ unit CDCL::unitPropagation() {
 }
 
 
-Clause CDCL::solver(int decisionLevel) {
+Clause CDCL::solver(int decisionLevel)
+{
 	while (true)
 	{
-		
-		Clauses clauses = statement.getClauses(conclusion);
+		auto clauses = statement.getClauses(conclusion);
 
 		satisfiable = true;
 		for (unsigned int i = 0; i < clauses.size(); i++)
 		{
-
 			if (clauses[i].count(0) == 0)
 				satisfiable = false;
 
@@ -96,44 +74,39 @@ Clause CDCL::solver(int decisionLevel) {
 			return c;
 		}
 
-		unit p = unitPropagation();
+		auto p = unitPropagation();
 		if (p.first != -1)
 		{
-			Clause c = solver(decisionLevel);
+			auto c = solver(decisionLevel);
 			if (c.size() == 0)
 			{ // UNSAT
 				conclusion.unset(p.first);
 				return c;
 			}
-			else if (c.count(0) > 0)
-			{  // SAT
+			if (c.count(0) > 0)
+			{ // SAT
 				return c;
 			}
 
-			
+
 			conclusion.unset(p.first);
 
-			Clause c2 = statement.getClauses()[p.second];
+			auto c2 = statement.getClauses()[p.second];
 
-			if ((c.count(p.first) > 0) || (c.count(-p.first) > 0))
-			{
+			if (c.count(p.first) > 0 || c.count(-p.first) > 0)
 				return resolve(c, c2, p.first);
-			}
-			else
-			{
-				return c;
-			}
+			return c;
 		}
 
 
-		Variable var = 0;
+		auto var = 0;
 		unsigned int clause_length = 100000;
-		for (unsigned int i = 0; i < clauses.size(); i++)
+
+		for (auto c:clauses)
 		{
-			Clause c = clauses[i];
 			if (c.count(0) > 0) continue; // true
 
-			if ((c.size() > 0) && (c.size() < clause_length))
+			if (c.size() > 0 && c.size() < clause_length)
 			{
 				clause_length = c.size();
 				var = abs(*c.begin());
@@ -141,18 +114,18 @@ Clause CDCL::solver(int decisionLevel) {
 		}
 
 
-
 		bool value = rand() % 2;
 		conclusion.set(var, value);
 
-		Clause c = solver(decisionLevel + 1);
+		auto c = solver(decisionLevel + 1);
 
 
 		if (c.count(0) != 0)
 		{ // SAT
 			return c;
 		}
-		else if ((c.count(var) == 0) && (c.count(-var) == 0))
+		if (c.count(var) == 0 && c.count(-var) == 0)
+
 		{
 			conclusion.unset(var);
 			return c;
@@ -161,15 +134,11 @@ Clause CDCL::solver(int decisionLevel) {
 		conclusion.unset(var);
 
 		statement.add(c);
-
-
-
-
 	}
 }
 
-void CDCL::solve(){
-
+void CDCL::solve()
+{
 	if (solved) return;
 
 	while (unitPropagation().first != -1);

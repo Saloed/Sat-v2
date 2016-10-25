@@ -11,7 +11,9 @@ using namespace std;
 class Sat_Solver_Base
 {
 public:
-    Sat_Solver_Base(Term formula);
+	virtual ~Sat_Solver_Base();
+
+	Sat_Solver_Base(Term formula);
     virtual void solve() = 0;
     bool isSatisfiable();
     Assigment getModel();

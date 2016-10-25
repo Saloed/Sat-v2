@@ -13,10 +13,10 @@ Term readFile(string path) {
 
 	Term f;
 
-	bool started = false;
+	auto started = false;
 	string s;
 	int numVars, numClauses = 0;
-	int cnt = 0;
+	auto cnt = 0;
 	char ch;
 	while (infile.get(ch))
 	{
@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
 		cout << "USAGE: " << argv[0] << " [.cnf FILE]" << endl;
 		return 0;
 	}
-	string path = string(argv[1]);
-	Term f = readFile(path);
+	auto path = string(argv[1]);
+	auto f = readFile(path);
 	CDCL sat(f);
 	sat.solve();
 	sat.printModel();

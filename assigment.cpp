@@ -12,7 +12,8 @@ void Assigment::unset(Variable var) {
     data.erase(var);
 }
 
-bool Assigment::isSet(Variable var) {
+bool Assigment::isSet(Variable var) const
+{
     return data.count(var) > 0;
 }
 bool Assigment::isTrue(Variable var) {
